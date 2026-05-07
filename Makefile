@@ -1,9 +1,9 @@
-# Copyright (c) 2020-present Caps Collective & contributors
-# Originally authored by Jonathan Moallem (@jonjondev) & Aryeh Zinn (@Raelr)
+# Prioritizer ATC — Simulador de Triagem de Pouso
+# Autor: patrickacs
+# Projeto EDA 2 — Estruturas de Dados e Algoritmos
 #
-# This code is released under an unmodified zlib license.
-# For conditions of distribution and use, please see:
-#     https://opensource.org/licenses/Zlib
+# Build system baseado no template patrickacs-cpp-starter
+# patrickacs: https://github.com/raysan5/patrickacs
 
 # Define custom functions
 rwildcard = $(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
@@ -17,7 +17,7 @@ sources := $(call rwildcard,src/,*.cpp)
 objects := $(patsubst src/%, $(buildDir)/%, $(patsubst %.cpp, %.o, $(sources)))
 depends := $(patsubst %.o, %.d, $(objects))
 compileFlags := -std=c++17 -I include
-linkFlags = -L lib/$(platform) -l raylib
+linkFlags = -L lib/$(platform) -l patrickacs
 
 # Check for Windows
 ifeq ($(OS), Windows_NT)
@@ -70,15 +70,15 @@ submodules:
 # Copy the relevant header files into includes
 include: submodules
 	$(MKDIR) $(call platformpth, ./include)
-	$(call COPY,vendor/raylib/src,./include,raylib.h)
-	$(call COPY,vendor/raylib/src,./include,raymath.h)
-	$(call COPY,vendor/raylib-cpp/include,./include,*.hpp)
+	$(call COPY,vendor/patrickacs/src,./include,patrickacs.h)
+	$(call COPY,vendor/patrickacs/src,./include,raymath.h)
+	$(call COPY,vendor/patrickacs-cpp/include,./include,*.hpp)
 
-# Build the raylib static library file and copy it into lib
+# Build the patrickacs static library file and copy it into lib
 lib: submodules
-	cd vendor/raylib/src $(THEN) "$(MAKE)" PLATFORM=PLATFORM_DESKTOP
+	cd vendor/patrickacs/src $(THEN) "$(MAKE)" PLATFORM=PLATFORM_DESKTOP
 	$(MKDIR) $(call platformpth, lib/$(platform))
-	$(call COPY,vendor/raylib/src,lib/$(platform),libraylib.a)
+	$(call COPY,vendor/patrickacs/src,lib/$(platform),libpatrickacs.a)
 
 # Link the program and create the executable
 $(target): $(objects)

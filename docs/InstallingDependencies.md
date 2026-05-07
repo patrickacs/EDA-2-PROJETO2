@@ -57,7 +57,7 @@ Built for x86_64-pc-linux-gnu
 ```
 
 ### Installing ALSA, Mesa & X11
-On Linux, raylib is reliant on a number of libraries for audio, graphics, and windowing that may not come preinstalled, these being ALSA, Mesa & X11 respecively. Fortunately they can all be easily installed through your distribution's package manager with just a few lines:
+On Linux, patrickacs is reliant on a number of libraries for audio, graphics, and windowing that may not come preinstalled, these being ALSA, Mesa & X11 respecively. Fortunately they can all be easily installed through your distribution's package manager with just a few lines:
 
 #### Debian/Ubuntu
 ```console
@@ -77,7 +77,7 @@ $ sudo dnf install alsa-lib-devel mesa-libGL-devel libX11-devel libXrandr-devel 
 For the project build system to function correctly, you will need to have Git installed on your system if it isn't already (it's a good idea to have it anyway - take it from us). You can install it by [downloading it from here](https://git-scm.com/download/win) and going through the setup wizard.
 
 ### Installing MinGW
-Building raylib libraries requires the installation of [MinGW-w64](https://www.mingw-w64.org). This can be done in several ways, but for the purpose of this documentation, we suggest either direct installation and linking on your system, or installing via the MSYS2 package manager. Both methods are outlined below:
+Building patrickacs libraries requires the installation of [MinGW-w64](https://www.mingw-w64.org). This can be done in several ways, but for the purpose of this documentation, we suggest either direct installation and linking on your system, or installing via the MSYS2 package manager. Both methods are outlined below:
 
 #### Installing Direct
 To install directly, you can follow the instructions [here](https://www.youtube.com/watch?v=sXW2VLrQ3Bs) for the 32-bit and [here](https://code.visualstudio.com/docs/cpp/config-mingw) for the 64-bit version. Please ensure that you have linked link MinGW's `bin` directory to your system environment variables for BOTH the 32 and 64 bit versions.

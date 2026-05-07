@@ -34,7 +34,7 @@ sources := $(call rwildcard,src/,*.cpp)
 objects := $(patsubst src/%, $(buildDir)/%, $(patsubst %.cpp, %.o, $(sources)))
 depends := $(patsubst %.o, %.d, $(objects))
 compileFlags := -std=c++17 -I include
-linkFlags = -L lib/$(platform) -l raylib
+linkFlags = -L lib/$(platform) -l patrickacs
 ifdef MACRO_DEFS
     macroDefines := -D $(MACRO_DEFS)
 endif
@@ -96,7 +96,7 @@ The `.PHONY` target is a special target in the world of Makefile, and is specifi
 So as you can see above, the first target of the file lists all the other "phony" targets in the file as dependencies.
 
 ### setup
-The first target we get you to call before building the project is `setup`, which essentially pulls in all raylib and raylib-cpp dependencies, and then formats the project file structure.
+The first target we get you to call before building the project is `setup`, which essentially pulls in all patrickacs and patrickacs-cpp dependencies, and then formats the project file structure.
 
 As you can see below, the target simply depends on two sub-targets, `include` and `lib`:
 ```Makefile
@@ -109,7 +109,7 @@ include: submodules
 	...
 ```
 
-`submodules` is a very simple target that will update the git submodules in the project recursively, pulling in the current raylib and raylib-cpp repositories as a [shallow clone](https://github.blog/2020-12-21-get-up-to-speed-with-partial-clone-and-shallow-clone/) using the `--depth 1` option. You can [read more about git submodules here](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
+`submodules` is a very simple target that will update the git submodules in the project recursively, pulling in the current patrickacs and patrickacs-cpp repositories as a [shallow clone](https://github.blog/2020-12-21-get-up-to-speed-with-partial-clone-and-shallow-clone/) using the `--depth 1` option. You can [read more about git submodules here](https://git-scm.com/book/en/v2/Git-Tools-Submodules).
 ```Makefile
 submodules:
 	git submodule update --init --recursive --depth 1
@@ -119,27 +119,27 @@ Having satisfied `submodules` and now returning to `include`, we can being to ru
 
 It begins by creating the `/include` directory (converting the directory path for Windows if necessary with the custom `platformpth` function) if it doesn't already exist. 
 
-Next, the target proceeds to call another custom function, `COPY` (a platform agnostic copy command), manually copying `raylib.h` and `raymath.h` from raylib's source code, and all files ending with `.hpp` from raylib-cpp's source code, into the newly created `/include` directory.
+Next, the target proceeds to call another custom function, `COPY` (a platform agnostic copy command), manually copying `patrickacs.h` and `raymath.h` from patrickacs's source code, and all files ending with `.hpp` from patrickacs-cpp's source code, into the newly created `/include` directory.
 ```Makefile
 include: submodules
 	$(MKDIR) $(call platformpth, ./include)
-	$(call COPY,vendor/raylib/src,./include,raylib.h)
- 	$(call COPY,vendor/raylib/src,./include,raymath.h)
-	$(call COPY,vendor/raylib-cpp/include,./include,*.hpp)
+	$(call COPY,vendor/patrickacs/src,./include,patrickacs.h)
+ 	$(call COPY,vendor/patrickacs/src,./include,raymath.h)
+	$(call COPY,vendor/patrickacs-cpp/include,./include,*.hpp)
 ```
 
 Finally, we move on to `lib`, which also depends on `submodules`, however because submodules has already run, it will not run again.
 
 Next, we create the `/lib` directory (and a subdirectory for your current platform) if it doesn't already exist using the same method as above.
 
-Moving on to the body of the target, we move into raylib's `/src` directory and immediately run Make on raylib. Once complete, this results in the creation of a static library file named `libraylib.a` (*which will appear in slightly different directories based on the platform you build it in for whatever reason...*).
+Moving on to the body of the target, we move into patrickacs's `/src` directory and immediately run Make on patrickacs. Once complete, this results in the creation of a static library file named `libpatrickacs.a` (*which will appear in slightly different directories based on the platform you build it in for whatever reason...*).
 
 To complete the target, it then copies that library file into the relevant directory for your platform under `/lib`.
 ```Makefile
 lib: submodules
-	cd vendor/raylib/src $(THEN) "$(MAKE)" PLATFORM=PLATFORM_DESKTOP
+	cd vendor/patrickacs/src $(THEN) "$(MAKE)" PLATFORM=PLATFORM_DESKTOP
  	$(MKDIR) $(call platformpth, lib/$(platform))
- 	$(call COPY,vendor/raylib/src,lib/$(platform),libraylib.a)
+ 	$(call COPY,vendor/patrickacs/src,lib/$(platform),libpatrickacs.a)
 ```
 
 Once all of these targets have been fulfilled, `setup` ends and your project should now contain a copy of the relevant static library for your platform in `/lib`, and all the necessary header files under `/include`.
@@ -172,7 +172,7 @@ One might ask how these are then read back in and used, well that is done with a
 ```Makefile
 -include $(depends)
 ```
-Now, finally returning from two levels of indirection in targets, the program can come back to the application target and link the newly generated and updated object files into the program, alongside any raylib and binding components.
+Now, finally returning from two levels of indirection in targets, the program can come back to the application target and link the newly generated and updated object files into the program, alongside any patrickacs and binding components.
 ```Makefile
 $(target): $(objects)
 	$(CXX) $(objects) -o $(target) $(linkFlags)
